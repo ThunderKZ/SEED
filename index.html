@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
+  <!-- Replace the content tag with appropriate information -->
+  <meta name="description" content="DESCRIPTION META TAG">
+  <meta property="og:title" content="SOCIAL MEDIA TITLE TAG"/>
+  <meta property="og:description" content="SOCIAL MEDIA DESCRIPTION TAG TAG"/>
+  <meta property="og:url" content="URL OF THE WEBSITE"/>
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
+  <meta property="og:image" content="static/image/your_banner_image.png" />
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+
+
+  <!-- <meta name="twitter:title" content="TWITTER BANNER TITLE META TAG">
+  <meta name="twitter:description" content="TWITTER BANNER DESCRIPTION META TAG"> -->
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
+  <!-- <meta name="twitter:image" content="static/images/your_twitter_banner_image.png">
+  <meta name="twitter:card" content="summary_large_image"> -->
+  <!-- Keywords for your paper to be indexed by-->
+  <meta name="keywords" content="KEYWORDS SHOULD BE PLACED HERE">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="icon" type="image/x-icon" href="static/images/touch.ico">
+  <link rel="apple-touch-icon" href="static/images/touch.ico">
+  <title>TouchFormer</title>
+  <!-- <link rel="icon" type="image/x-icon" href="static/images/favicon.ico"> -->
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+</head>
+<body>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">TouchFormer: A Robust Transformer-based Framework for Multimodal Material Perception</h1>
+            <div class="is-size-5 publication-authors">
+              <!-- Paper authors -->
+              <span class="author-block">
+                <a href="https://scholar.google.com.hk/citations?user=xxGSsvoAAAAJ" target="_blank">Kailin Lyu</a>,</span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=MIyyF7QAAAAJ" target="_blank">Long Xiao</a>,</span>
+              <span class="author-block">
+                <a href="https://orcid.org/0009-0006-2281-0794" target="_blank">Jianing Zeng</a>,</span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=48A9z_UAAAAJ" target="_blank">Junhao Dong</a>,</span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=PjrMe9kAAAAJ" target="_blank">Xuexin Liu</a>,</span>
+              <span class="author-block">
+                <a href="https://github.com/ZTak3n" target="_blank">Zhuojun Zou</a>,</span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?view_op=new_articles&hl=zh-CN&imq=Yang+Haoyue#" target="_blank">Haoyue Yang</a>,</span>
+              <span class="author-block">
+                <a href="https://www.linkedin.com/in/%E7%90%B3-%E8%88%92-74b7a6119/" target="_blank">Lin Shu</a>,</span>
+              <span class="author-block">
+                <a href="http://people.ucas.edu.cn/~haojie" target="_blank">Jie Hao</a>
+                  </span>
+                  </div>
+
+                  <div class="is-size-5 publication-authors">
+                    <span class="author-block">Institute of Automation, Chinese Academy of Sciences<br>School of Artificial Intelligence, University of Chinese Academy of Sciences<br>School of Advanced Interdisciplinary Sciences, University of Chinese Academy of Sciences<br>Nanyang Technological University<br>AAAI 2026</span>
+                    <!-- <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span> -->
+                  </div>
+
+                  <div class="column has-text-centered">
+                    <div class="publication-links">
+                         <!-- Arxiv PDF link -->
+                      <span class="link-block">
+                        <a href="https://arxiv.org/abs/2511.19509" target="_blank"
+                        class="external-link button is-normal is-rounded is-dark">
+                        <span class="icon">
+                          <i class="fas fa-file-pdf"></i>
+                        </span>
+                        <span>Paper</span>
+                      </a>
+                    </span>
+
+                    <!-- Supplementary PDF link -->
+                    <span class="link-block">
+                      <a href="static/pdfs/supplementary_material.pdf" target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fas fa-file-pdf"></i>
+                      </span>
+                      <span>Supplementary</span>
+                    </a>
+                  </span>
+
+                  <!-- Github link -->
+                  <span class="link-block">
+                    <a href="https://github.com/TouchFormer/Code" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+
+                <!-- ArXiv abstract Link -->
+                <!-- <span class="link-block">
+                  <a href="https://arxiv.org/abs/<ARXIV PAPER ID>" target="_blank"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Teaser Introduction-->
+<section class="section hero">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <p>
+        <img src="static/images/intro_new.png" alt="Introduction" class="blend-img-background center-image" style="max-width: 100%; height: auto;">
+      </p>
+      <br>
+      <p>
+        Robust multimodal tactile perception under visual limitations and modality noise. <strong>(a)</strong> In vision-limited scenarios, vision-based methods degrade significantly, while our TouchFormer framework maintains high accuracy without visual input. <strong>(b)</strong> When facing real-world modality noise, TouchFormer shows only minor performance loss, in contrast to substantial degradation in baselines like MTCNN. <strong>(c)</strong> TouchFormer model processes multimodal data and leverages a physics engine to support robust material perception and manipulation under extreme, vision-constrained conditions.
+      </p>
+    </div>
+  </div>
+</section>
+<!-- End teaser pipeline -->
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Traditional vision-based material perception methods suffer from severe performance degradation in visually impaired scenarios, making non-visual multimodal material perception a prominent research direction. However, existing methods often naively fuse multiple modality inputs, neglecting both the modality noise and missing modalities prevalent in realworld scenarios, as well as the dynamic variation in modality importance for specific tasks, leading to poor performance in several benchmark tasks. In this paper, we propose a robust multimodal fusion framework, TouchFormer. Specifically, we employ a Modality-Adaptive Gating(MAG) mechanism and intra- and inter-modality attention mechanisms to adaptively integrate cross-modal features, enhancing modelrobustness. Additionally, we introduce a Cross-Instance Embedding Regularization(CER) strategy, which significantly improves classification accuracy in fine-grained subcategory material recognition tasks. Experimental results demonstrate that, compared to existing non-visual methods, the proposed TouchFormer framework achieves classification accuracy improvements of 2.48% and 7.64% on SSMC and USMC tasks, respectively. Furthermore, real-world robotic experiments validate the effectiveness of the TouchFormer framework in enabling robots to understand their environment and infer appropriate operational strategies, highlighting its potential for applications in emergency response and industrial scenarios.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End paper abstract -->
+
+<section class="section is-small">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="columns is-full">
+        <div class="content">
+          <h2 class="title is-3">Pipeline</h2>
+            <p>
+              <img src="static/images/pipline.png" alt="Pipeline" class="blend-img-background center-image" style="max-width: 100%; height: auto;">
+            </p>
+            <br>
+            <p>
+              The model integrates modality-wise adaptive gating(<strong>MAG</strong>), intra- and inter-modal Transformer fusion, and cross-instance embedding regularization(<strong>CER</strong>) to achieve robust multimodal representation learning under noisy or missing modality conditions.
+            </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered ">
+      <div class="content">
+        <h2 class="title is-3">Multimodal surface material classification</h2>
+        <p>
+          <img src="static/images/tab1.png" alt="Pipeline" class="blend-img-background center-image" style="max-width: 100%; height: auto;">
+        </p>
+        <br>
+        <p>
+          We compare the classification accuracy of various methods and our proposed approach across different tasks on the LMTHM dataset under different modality combinations. "†" denote the corresponding sources of the reported results.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Image carousel -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel" pause="data-pause">
+        <!-- <div id="sliderc8ecc163-92ca-4f41-933d-4504cd49c37a" class="slider" tabindex="0"> -->
+          <!-- <div class="slider-container" style="opacity: 1; width: 10032px; transition: none; transform: translate3d(-1824px, 0px, 0px);"> -->
+          <div class="item is-centered" >
+        <!-- Your image here -->
+            <img class="center-image blend-img-background" src="static/images/matrix.png" alt="MY ALT TEXT" />
+            <h2 class="subtitle">
+            (a) Coarse-grained classification results across 8 material classes. (b) Fine-grained classification results (e.g., using category C6 as an example). TouchFormer demonstrates strong discriminative ability at both granularity levels.
+            </h2>
+          </div>
+          <div class="item is-centered">
+          <!-- Your image here -->
+            <img class="center-image blend-img-background" src="static/images/tab2_re.png" alt="MY ALT TEXT" />
+            <h2 class="subtitle" >
+            <strong>Comparison of classification accuracy</strong> as sound (S), normal force (N), friction force (F), and acceleration (A) modalities are incrementally added.
+            </h2>
+          </div>
+          <div class="item is-centered"> 
+          <!-- Your image here -->
+          <img class="center-image blend-img-background" src="static/images/plot_curve.png" alt="MY ALT TEXT" />
+            <h2 class="subtitle">
+              Anti-Inference analysis. We compare the classification performance of TouchFormer and other method under varying corruption ratios(p). TouchFormer consistently achieves higher accuracy across different noise levels, demonstrating enhanced robustness.
+            </h2>
+          </div>
+          <!-- </div> -->
+        <!-- </div> -->
+  </div>
+</div>
+</div>
+</section>
+<!-- End image carousel -->
+
+
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-3">Video for Simulated Fire Scenario</h2>
+      <div class = "level-set has-text-justified">
+        <p>
+          This task simulates key complexities inherent in fire environments, characterized by three principal constraints: compromised visibility, confined spatial configurations, and dense object distributions.
+        </p>
+      </div>
+        <div class="item is-centered">
+          <video poster="" id="video1" controls loop height="100%">
+            <!-- Your video file here -->
+            <source src="static/videos/non-audio.mp4"
+            type="video/mp4">
+          </video>
+          <p>
+            Robotic experiment in the normal scenario.
+          </p>
+        </div>
+        <!-- <br> -->
+        <div class="item is-centered">
+          <video poster="" id="video2" controls loop height="100%">
+            <!-- Your video file here -->
+            <source src="static/videos/fire.mp4"
+            type="video/mp4"> 
+          </video>
+          <!-- <br> -->
+          <p>
+            Robotic experiment in the fire scenario.
+          </p>
+        </div>
+      <!-- </div> -->
+    </div>
+  </div>
+</section>
+
+
+
+<!-- Paper poster -->
+<!-- <section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title">Poster</h2>
+
+      <iframe  src="static/pdfs/sample.pdf" width="100%" height="550">
+          </iframe>
+        
+      </div>
+    </div>
+  </section> -->
+<!--End paper poster -->
+
+
+<!--BibTex citation -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@article{lyu2025touchformer,
+ title={TouchFormer: A Robust Transformer-based Framework for Multimodal Material Perception},
+ author={Lyu, Kailin and Xiao, Long and Zeng, Jianing and Dong, Junhao and Liu, Xuexin and Zou, Zhuojun and Yang, Haoyue and Shu, Lin and Hao, Jie},
+ journal={arXiv preprint arXiv:2511.19509},
+ year={2025}
+}</code></pre>
+    </div>
+</section>
+<!--End BibTex citation -->
+
+
+  <footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+          </p>
+          <!-- <p>
+            You are free to borrow the source code of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p> -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Statcounter tracking code -->
+  
+<!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
+
+    <!-- End of Statcounter Code -->
+
+  </body>
+  </html>
