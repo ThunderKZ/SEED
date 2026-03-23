@@ -4,7 +4,6 @@
 <head>
 <title>剧情顺序</title>
 <style>
-/* 【仅弹窗部分 - CSS】新增角落按钮样式 + 原有样式 */
 .tips-modal {
     position: fixed;
     top: 0;
@@ -18,8 +17,6 @@
     z-index: 99999;
     padding: 20px;
     box-sizing: border-box;
-    /* 首次打开默认显示 */
-    display: flex;
 }
 .modal-content {
     background: white;
@@ -30,16 +27,17 @@
     box-sizing: border-box;
 }
 .modal-title {
+    text-align: center;
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 15px;
-    color: #333;
+    color: #232323;
     margin-top: 0;
 }
 .modal-text {
-    font-size: 16px;
+    font-size: 20px;
     line-height: 1.8;
-    color: #666;
+    color: #474747;
     margin-bottom: 20px;
 }
 .modal-text p {
@@ -49,11 +47,20 @@
     margin-bottom: 0;
 }
 /* 重点文字虚线方框样式 */
-.highlight-text {
+.blue-text {
     display: inline-block;
-    padding: 2px 2px;
-    border: 2px dashed #000066;
-    border-radius: 4px;
+    padding: 1px 1px;
+    border: 4px dashed #0066cc;
+    border-radius: 3px;
+    color: black;
+    font-weight: bold;
+    margin: 0 2px;
+}
+.red-text {
+    display: inline-block;
+    padding: 1px 1px;
+    border: 4px dashed #990000;
+    border-radius: 3px;
     color: black;
     font-weight: bold;
     margin: 0 2px;
@@ -72,21 +79,24 @@
 .close-modal-btn:hover {
     background: #337ecc;
 }
-
-/* 👇 新增：角落收起按钮样式（悬浮提示+双端适配） */
+.modal-btn-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 两列等分 */
+    gap: 10px; /* 按钮间距 */
+}
 .tips-toggle-btn {
     position: fixed;
     bottom: 20px; /* 距离底部20px */
     right: 20px;  /* 距离右侧20px */
-    width: 50px;
-    height: 50px;
+    width: 80px;
+    height: 80px;
     background: #409eff;
     color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 28px;
     cursor: pointer;
     z-index: 99998; /* 略低于弹窗，避免遮挡 */
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
@@ -96,29 +106,47 @@
     transform: scale(1.1); /* 悬浮放大 */
     background: #337ecc;
 }
+.feedback-btn {
+    height: 48px;
+    border: 1px solid #409eff; /* 边框式设计，区分主按钮 */
+    border-radius: 8px;
+    background: white;
+    color: #409eff;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.feedback-btn:hover {
+    background: #f0f9ff;
+}
+
 /* 手机端角落按钮适配 */
 @media (max-width: 375px) {
     .modal-content {
         padding: 20px;
     }
     .modal-title {
-        font-size: 18px;
+        font-size: 20px;
     }
     .modal-text {
-        font-size: 15px;
+        font-size: 18px;
     }
-    .highlight-text {
-        padding: 1px 4px;
+    .blue-text {
+        padding: 1px 2px;
         border-width: 1px;
     }
-    .close-modal-btn {
+    .red-text {
+        padding: 1px 2px;
+        border-width: 1px;
+    }
+    .close-modal-btn, .feedback-btn {
         height: 44px;
         font-size: 16px;
     }
     .tips-toggle-btn {
-        width: 44px;
-        height: 44px;
-        font-size: 20px;
+        width: 60px;
+        height: 60px;
+        font-size: 26px;
     }
 }
 </style>
@@ -130,15 +158,18 @@
 <!-- 主弹窗容器 -->
 <div class="tips-modal" id="tipsModal">
     <div class="modal-content">
-        <h3 class="modal-title">功能使用说明</h3>
+        <h3 class="modal-title">白荆回廊剧情顺序推荐4.0</h3>
         <div class="modal-text">
-            <p>0. 右上角控制面板进行缩放/移动，可收起展开；点击右下角按钮可以再次阅读该说明</p>
-            <p>1. 右上角<span class="highlight-text">控制面板</span>支持拖动、展开/收起，避免遮挡页面内容</p>
-            <p>2. +/− 按钮实现视图放大/缩小，↺ 一键恢复默认缩放比例</p>
-            <p>3. 方向键控制画布上下左右平移，轻松查看细节</p>
-            <p>4. <span class="highlight-text">控制面板</span>适配电脑/手机，拖动时不会触发页面下拉刷新</p>
+            <p>0. 右上角控制面板进行缩放&移动，可收起展开；点击右下角按钮可以再次阅读该说明；</p>
+            <p>1. <span class="blue-text">蓝色虚线</span>代表该活动有较为复杂的观看顺序，点击跳转到该活动的详情介绍；</p>
+            <p>2. <span class="red-text">红色虚线</span>代表外部链接，点击跳转到活动pv/角色pv/其他b站视频等；</p>
+            <p>3. <b>角色镌相</b>推荐在白荆回廊wiki上查阅，<b>烙痕剧情&角色看板/茶憩</b>推荐在游戏内或b站视频观看；</p>
+            <p>4. <b>感谢白荆回廊wiki对游戏内容的整理！</b></p>
         </div>
-        <button class="close-modal-btn" id="closeModalBtn">我知道了</button>
+        <div class="modal-btn-group">
+            <button class="close-modal-btn" id="closeModalBtn">我知道了</button>
+            <button class="feedback-btn" id="feedbackBtn">意见反馈</button>
+            </div>
     </div>
 </div>
 
@@ -244,7 +275,6 @@
   };
 })();
 
-// ==================== 你原有功能（完全不变）====================
 (function() {
   function initControls() {
     let graphContainer = document.querySelector('.mxgraph > div');
@@ -329,33 +359,43 @@
     const tipsModal = document.getElementById('tipsModal');
     const closeModalBtn = document.getElementById('closeModalBtn');
     const tipsToggleBtn = document.getElementById('tipsToggleBtn');
+    const feedbackBtn = document.getElementById('feedbackBtn');
     
-    // 标记是否是首次打开（页面加载时默认全屏显示）
+    // 👇 关键配置：替换为你的第三方问卷链接（腾讯问卷/金数据等）
+    const FEEDBACK_URL = 'https://v.wjx.cn/vm/Yk92DWx.aspx'; 
+
     let isFirstOpen = true;
 
-    // 关闭弹窗：隐藏主弹窗，显示角落按钮
+    // 关闭弹窗：缩至角落
     function closeModal() {
         tipsModal.style.display = 'none';
         tipsToggleBtn.style.display = 'flex';
-        isFirstOpen = false; // 首次打开标记置为false
+        isFirstOpen = false;
     }
 
-    // 打开弹窗：显示主弹窗，隐藏角落按钮
+    // 打开弹窗：展开全屏
     function openModal() {
         tipsModal.style.display = 'flex';
         tipsToggleBtn.style.display = 'none';
     }
 
-    // 初始状态：首次打开默认显示弹窗
+    // 初始状态：首次打开显示弹窗
     openModal();
 
     // 点击「我知道了」：缩至角落
     closeModalBtn.addEventListener('click', closeModal);
 
+    // 👇 新增：点击「意见反馈」：跳转至第三方问卷（新标签页打开，不关闭原页面）
+    feedbackBtn.addEventListener('click', () => {
+        window.open(FEEDBACK_URL, '_blank'); 
+        // 可选：跳转后自动缩至角落（取消注释即可）
+        // closeModal();
+    });
+
     // 点击角落按钮：重新展开弹窗
     tipsToggleBtn.addEventListener('click', openModal);
 
-    // 可选：点击遮罩层关闭弹窗（缩至角落，取消注释即可开启）
+    // 可选：点击遮罩层关闭弹窗
     // tipsModal.addEventListener('click', (e) => {
     //     if (e.target === tipsModal) {
     //         closeModal();
