@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     // ==============================================
-    // 1. 控制面板
+    // 1. 控制面板：默认在右上角 + 向右下展开
     // ==============================================
     const controlPanel = document.getElementById('controlPanel');
     const panelMode = document.body.getAttribute('data-panel');
@@ -12,79 +12,89 @@ document.addEventListener('DOMContentLoaded', function() {
         const panelContent = document.getElementById('panelContent');
         const toggleBtn = document.getElementById('toggleBtn');
 
-        // 默认状态
+
+        controlPanel.style.position = 'fixed';
+        controlPanel.style.top = '10px';      // 顶部贴边
+        controlPanel.style.right = '10px';    // 右侧贴边
+        controlPanel.style.left = 'auto';      // 取消左边定位
+        controlPanel.style.transform = 'none'; // 清除居中
+        controlPanel.style.margin = '0';
+        controlPanel.style.zIndex = '9999';
+
+        // 默认展开/收起
         if (panelMode === 'close') {
             panelContent.style.display = 'none';
-            toggleBtn.textContent = '▼';
+            toggleBtn.textContent = "▼";
         } else {
             panelContent.style.display = 'block';
-            toggleBtn.textContent = '▲';
+            toggleBtn.textContent = "▲";
         }
 
+        // ======================
+        // 拖动逻辑
+        // ======================
         let isDragging = false;
-        let offsetX, offsetY;
+        let startX, startY, origRight, origTop;
 
-        // ===== PC 端拖动 =====
+        // 开始拖动
         panelDrag.addEventListener('mousedown', function(e) {
             isDragging = true;
-            const rect = controlPanel.getBoundingClientRect();
-            offsetX = e.clientX - rect.left;
-            offsetY = e.clientY - rect.top;
-            controlPanel.style.left = rect.left + "px";
-            controlPanel.style.top = rect.top + "px";
-            controlPanel.style.right = "auto";
+            startX = e.clientX;
+            startY = e.clientY;
+            origRight = parseInt(window.getComputedStyle(controlPanel).right);
+            origTop = parseInt(window.getComputedStyle(controlPanel).top);
             e.preventDefault();
         });
 
-        // ===== 移动端触摸拖动 =====
         panelDrag.addEventListener('touchstart', function(e) {
             isDragging = true;
             const touch = e.touches[0];
-            const rect = controlPanel.getBoundingClientRect();
-            offsetX = touch.clientX - rect.left;
-            offsetY = touch.clientY - rect.top;
-            controlPanel.style.left = rect.left + "px";
-            controlPanel.style.top = rect.top + "px";
-            controlPanel.style.right = "auto";
+            startX = touch.clientX;
+            startY = touch.clientY;
+            origRight = parseInt(window.getComputedStyle(controlPanel).right);
+            origTop = parseInt(window.getComputedStyle(controlPanel).top);
             e.preventDefault();
         });
 
-        // ===== 移动事件 =====
-        document.addEventListener('mousemove', move);
-        document.addEventListener('touchmove', move);
-
-        function move(e) {
+        // 拖动中
+        function movePanel(e) {
             if (!isDragging) return;
-            let clientX, clientY;
-
+            let x, y;
             if (e.type === 'touchmove') {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
+                x = e.touches[0].clientX;
+                y = e.touches[0].clientY;
             } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
+                x = e.clientX;
+                y = e.clientY;
             }
 
-            const x = clientX - offsetX;
-            const y = clientY - offsetY;
-            controlPanel.style.left = x + "px";
-            controlPanel.style.top = y + "px";
+            const dx = x - startX;
+            const dy = y - startY;
+
+            // 固定右上角拖动
+            controlPanel.style.right = (origRight - dx) + "px";
+            controlPanel.style.top = (origTop + dy) + "px";
+            controlPanel.style.left = "auto";
         }
 
-        // ===== 结束拖动 =====
+        document.addEventListener('mousemove', movePanel);
+        document.addEventListener('touchmove', movePanel, { passive: false });
+
+        // 结束拖动
+        function endDrag() {
+            isDragging = false;
+        }
         document.addEventListener('mouseup', endDrag);
         document.addEventListener('touchend', endDrag);
         document.addEventListener('mouseleave', endDrag);
 
-        function endDrag() {
-            isDragging = false;
-        }
-
-        // 展开/收起
+        // ======================
+        // 展开/收起（向右下展开）
+        // ======================
         toggleBtn.addEventListener('click', function() {
-            const hidden = panelContent.style.display === 'none';
-            panelContent.style.display = hidden ? 'block' : 'none';
-            toggleBtn.textContent = hidden ? '▲' : '▼';
+            const isHidden = panelContent.style.display === 'none';
+            panelContent.style.display = isHidden ? 'block' : 'none';
+            toggleBtn.textContent = isHidden ? "▲" : "▼";
         });
     }
 
