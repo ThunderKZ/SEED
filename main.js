@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     // ==============================================
-    // 1. 控制面板（拖动已修复）
+    // 1. 控制面板
     // ==============================================
     const controlPanel = document.getElementById('controlPanel');
     const panelMode = document.body.getAttribute('data-panel');
@@ -21,42 +21,64 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleBtn.textContent = '▲';
         }
 
-        // ======================
-        // ✅ 修复：控制面板拖动
-        // ======================
         let isDragging = false;
         let offsetX, offsetY;
 
-        // 按下
+        // ===== PC 端拖动 =====
         panelDrag.addEventListener('mousedown', function(e) {
             isDragging = true;
-
             const rect = controlPanel.getBoundingClientRect();
             offsetX = e.clientX - rect.left;
             offsetY = e.clientY - rect.top;
-
             controlPanel.style.left = rect.left + "px";
             controlPanel.style.top = rect.top + "px";
             controlPanel.style.right = "auto";
-
             e.preventDefault();
         });
 
-        // 移动
-        document.addEventListener('mousemove', function(e) {
+        // ===== 移动端触摸拖动 =====
+        panelDrag.addEventListener('touchstart', function(e) {
+            isDragging = true;
+            const touch = e.touches[0];
+            const rect = controlPanel.getBoundingClientRect();
+            offsetX = touch.clientX - rect.left;
+            offsetY = touch.clientY - rect.top;
+            controlPanel.style.left = rect.left + "px";
+            controlPanel.style.top = rect.top + "px";
+            controlPanel.style.right = "auto";
+            e.preventDefault();
+        });
+
+        // ===== 移动事件 =====
+        document.addEventListener('mousemove', move);
+        document.addEventListener('touchmove', move);
+
+        function move(e) {
             if (!isDragging) return;
+            let clientX, clientY;
 
-            const x = e.clientX - offsetX;
-            const y = e.clientY - offsetY;
+            if (e.type === 'touchmove') {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
 
+            const x = clientX - offsetX;
+            const y = clientY - offsetY;
             controlPanel.style.left = x + "px";
             controlPanel.style.top = y + "px";
-        });
+        }
 
-        // 松开
-        document.addEventListener('mouseup', function() {
+        // ===== 结束拖动 =====
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchend', endDrag);
+        document.addEventListener('mouseleave', endDrag);
+
+        function endDrag() {
             isDragging = false;
-        });
+        }
 
         // 展开/收起
         toggleBtn.addEventListener('click', function() {
