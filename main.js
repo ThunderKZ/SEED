@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     // ==============================================
-    // 1. 控制面板：支持 无 / 默认展开 / 默认收起
+    // 1. 控制面板（拖动已修复）
     // ==============================================
     const controlPanel = document.getElementById('controlPanel');
     const panelMode = document.body.getAttribute('data-panel');
@@ -21,28 +21,39 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleBtn.textContent = '▲';
         }
 
-        // 拖动逻辑
+        // ======================
+        // ✅ 修复：控制面板拖动
+        // ======================
         let isDragging = false;
-        let startX, startY, left, top;
+        let offsetX, offsetY;
 
+        // 按下
         panelDrag.addEventListener('mousedown', function(e) {
             isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            left = controlPanel.offsetLeft;
-            top = controlPanel.offsetTop;
+
+            const rect = controlPanel.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+
+            controlPanel.style.left = rect.left + "px";
+            controlPanel.style.top = rect.top + "px";
+            controlPanel.style.right = "auto";
+
             e.preventDefault();
         });
 
+        // 移动
         document.addEventListener('mousemove', function(e) {
             if (!isDragging) return;
-            const x = left + e.clientX - startX;
-            const y = top + e.clientY - startY;
-            controlPanel.style.left = x + 'px';
-            controlPanel.style.top = y + 'px';
-            controlPanel.style.right = 'auto';
+
+            const x = e.clientX - offsetX;
+            const y = e.clientY - offsetY;
+
+            controlPanel.style.left = x + "px";
+            controlPanel.style.top = y + "px";
         });
 
+        // 松开
         document.addEventListener('mouseup', function() {
             isDragging = false;
         });
@@ -56,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==============================================
-    // 2. 主弹窗：data-modal 绝对生效！已修复
+    // 2. 主弹窗：data-modal 
     // ==============================================
     const tipsModal = document.getElementById('tipsModal');
     const tipsToggleBtn = document.getElementById('tipsToggleBtn');
