@@ -3,195 +3,25 @@
 <html>
 <head>
 <title>欢迎</title>
-<style>
-.tips-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 99999;
-    padding: 20px;
-    box-sizing: border-box;
-}
-.modal-content {
-    background: white;
-    border-radius: 16px;
-    padding: 30px;
-    max-width: 500px;
-    width: 100%;
-    box-sizing: border-box;
-}
-.modal-title {
-    text-align: center;
-    font-size: 26px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #232323;
-    margin-top: 0;
-}
-.modal-text {
-    font-size: 20px;
-    line-height: 1.8;
-    color: #474747;
-    margin-bottom: 20px;
-}
-.modal-text p {
-    margin: 0 0 10px 0;
-}
-.modal-text p:last-child {
-    margin-bottom: 0;
-}
-/* 重点文字虚线方框样式 */
-.blue-text {
-    display: inline-block;
-    padding: 1px 1px;
-    border: 4px dashed #0066cc;
-    border-radius: 3px;
-    color: black;
-    font-weight: bold;
-    margin: 0 2px;
-}
-.red-text {
-    display: inline-block;
-    padding: 1px 1px;
-    border: 4px dashed #990000;
-    border-radius: 3px;
-    color: black;
-    font-weight: bold;
-    margin: 0 2px;
-}
-.close-modal-btn {
-    width: 100%;
-    height: 48px;
-    border: none;
-    border-radius: 8px;
-    background: #409eff;
-    color: white;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-.close-modal-btn:hover {
-    background: #337ecc;
-}
-.modal-btn-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* 两列等分 */
-    gap: 10px; /* 按钮间距 */
-}
-.tips-toggle-btn {
-    position: fixed;
-    bottom: 20px; /* 距离底部20px */
-    right: 20px;  /* 距离右侧20px */
-    width: 80px;
-    height: 80px;
-    background: #409eff;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    cursor: pointer;
-    z-index: 99998; /* 略低于弹窗，避免遮挡 */
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-    transition: all 0.2s ease;
-}
-.tips-toggle-btn:hover {
-    transform: scale(1.1); /* 悬浮放大 */
-    background: #337ecc;
-}
-.feedback-btn {
-    height: 48px;
-    border: 1px solid #409eff; /* 边框式设计，区分主按钮 */
-    border-radius: 8px;
-    background: white;
-    color: #409eff;
-    font-size: 18px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-.feedback-btn:hover {
-    background: #f0f9ff;
-}
-
-/* 手机端角落按钮适配 */
-@media (max-width: 375px) {
-    .modal-content {
-        padding: 20px;
-    }
-    .modal-title {
-        font-size: 20px;
-    }
-    .modal-text {
-        font-size: 18px;
-    }
-    .blue-text {
-        padding: 1px 2px;
-        border-width: 1px;
-    }
-    .red-text {
-        padding: 1px 2px;
-        border-width: 1px;
-    }
-    .close-modal-btn, .feedback-btn {
-        height: 44px;
-        font-size: 16px;
-    }
-    .tips-toggle-btn {
-        width: 60px;
-        height: 60px;
-        font-size: 26px;
-    }
-}
-@media (min-width: 376px) and (max-width: 480px) {
-    .modal-title {
-        font-size: 21px;
-    }
-    .modal-text {
-        font-size: 17px;
-    }
-
-    .blue-text {
-        padding: 1px 2px;
-        border-width: 1px;
-        font-size: 18px;
-    }
-    .red-text {
-        padding: 1px 2px;
-        border-width: 1px;
-        font-size: 18px;
-    }
-    .close-modal-btn, .feedback-btn {
-        height: 48px;
-        font-size: 18px;
-    }
-    .tips-toggle-btn {
-        width: 62px;
-        height: 62px;
-        font-size: 29px;
-    }
-}
-</style>
+<link rel="stylesheet" href="style.css">
 <meta charset="utf-8"/>
 </head>
+
 <body>
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js"></script>
-<!-- 主弹窗容器 -->
+
+<div class="watermark-container"></div>
+
 <div class="tips-modal" id="tipsModal">
     <div class="modal-content">
-        <h3 class="modal-title">白荆回廊剧情顺序推荐4.0</h3>
+        <h3 class="modal-title">白荆回廊剧情顺序推荐 4.0</h3>
         <div class="modal-text">
-            <p>0. 右上角控制面板进行缩放&移动，可收起展开；点击右下角按钮可以再次阅读该说明；</p>
-            <p>1. <span class="blue-text">蓝色虚线</span>代表该活动有较为复杂的观看顺序，点击跳转到该活动的详情介绍；</p>
-            <p>2. <span class="red-text">红色虚线</span>代表外部链接，点击跳转到活动pv/角色pv/其他b站视频等；</p>
-            <p>3. <b>角色镌相</b>推荐在白荆回廊wiki上查阅，<b>烙痕剧情&角色看板/茶憩</b>推荐在游戏内或b站视频观看；</p>
-            <p>4. <b>感谢白荆回廊wiki对游戏内容的整理！</b></p>
+            <p>0. 右上角控制面板进行缩放&移动，可收起展开。点击右下角按钮可以再次阅读该说明；</p>
+            <p>1. 请按照箭头进行主线和活动的游玩，<b>黑色框</b>中的顺序可以按照喜好自行决定；</p>
+            <p>2. <span class="blue-text">蓝色虚线</span>代表该活动有较为复杂的观看顺序，点击跳转到该活动的详情介绍；</p>
+            <p>3. <span class="red-text">红色虚线</span>代表外部链接，点击跳转到活动pv/角色pv/其他b站视频等；</p>
+            <p>4. <b>角色镌相</b>推荐在白荆回廊wiki上查阅，<b>烙痕剧情&角色看板/茶憩</b>推荐在游戏内或b站视频观看；</p>
+            <p>5. <b>感谢白荆回廊wiki对游戏内容的整理！</b></p>
         </div>
         <div class="modal-btn-group">
             <button class="close-modal-btn" id="closeModalBtn">进入剧情</button>
@@ -200,9 +30,22 @@
     </div>
 </div>
 
-<!-- 角落收起后的小按钮（默认隐藏） -->
 <div class="tips-toggle-btn" id="tipsToggleBtn" style="display: none;">
     <span>📖</span>
+</div>
+
+<div class="thanks-tag" id="thanksTag">致谢 ❤️</div>
+<div class="thanks-modal" id="thanksModal">
+    <div class="thanks-modal-content">
+        <h3 class="thanks-modal-title">致谢</h3>
+        <div class="thanks-modal-text">
+            感谢XX技术社区提供的教程支持<br>
+            感谢XX朋友的代码指导<br>
+            感谢开源社区的所有贡献者<br>
+            特别感谢 @镜中愚人 的创意与付出
+        </div>
+        <!-- <button class="thanks-close-btn" id="thanksCloseBtn">关闭</button> -->
+    </div>
 </div>
 
 <script>
@@ -247,7 +90,12 @@
         // 可选：跳转后自动缩至角落（取消注释即可）
         // closeModal();
     });
-
+    // 致谢标签点击
+    thanksTag.addEventListener('click', openThanksModal);
+    // 致谢弹窗关闭按钮
+    thanksCloseBtn.addEventListener('click', () => {
+        thanksModal.style.display = 'none';
+    });
     // 点击角落按钮：重新展开弹窗
     tipsToggleBtn.addEventListener('click', openModal);
 
