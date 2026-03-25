@@ -1,189 +1,186 @@
-// ========== 通用功能 main.js | 已修复弹窗默认状态 ==========
+// ========== 最终整合版：你的完美缩放 + 面板拖动 + 弹窗 ==========
 document.addEventListener('DOMContentLoaded', function() {
+    'use strict';
 
-    // ==============================================
-    // 1. 控制面板：默认在右上角 + 向右下展开
-    // ==============================================
-    const controlPanel = document.getElementById('controlPanel');
-    const panelMode = document.body.getAttribute('data-panel');
+    // ===========================
+    // 1. 控制面板拖动 + 展开收起（右上角初始）
+    // ===========================
+    const panel = document.getElementById('controlPanel');
+    if (panel) {
+        const dragHandle = document.getElementById('dragHandle');
+        const content = document.getElementById('panelContent');
+        const toggle = document.getElementById('toggleBtn');
+        const panelMode = document.body.dataset.panel;
 
-    if (controlPanel) {
-        const panelDrag = document.getElementById('dragHandle');
-        const panelContent = document.getElementById('panelContent');
-        const toggleBtn = document.getElementById('toggleBtn');
+        // 初始位置：右上角
+        panel.style.position = 'fixed';
+        panel.style.top = '10px';
+        panel.style.right = '10px';
+        panel.style.left = 'auto';
+        panel.style.transform = 'none';
+        panel.style.zIndex = '9999';
 
+        let isDragging = false, startX, startY, left, top;
 
-        controlPanel.style.position = 'fixed';
-        controlPanel.style.top = '10px';      // 顶部贴边
-        controlPanel.style.right = '10px';    // 右侧贴边
-        controlPanel.style.left = 'auto';      // 取消左边定位
-        controlPanel.style.transform = 'none'; // 清除居中
-        controlPanel.style.margin = '0';
-        controlPanel.style.zIndex = '9999';
-
-        // 默认展开/收起
-        if (panelMode === 'close') {
-            panelContent.style.display = 'none';
-            toggleBtn.textContent = "▼";
-        } else {
-            panelContent.style.display = 'block';
-            toggleBtn.textContent = "▲";
-        }
-
-        // ======================
-        // 拖动逻辑
-        // ======================
-        let isDragging = false;
-        let startX, startY, origRight, origTop;
-
-        // 开始拖动
-        panelDrag.addEventListener('mousedown', function(e) {
+        // 拖动开始
+        dragHandle.addEventListener('mousedown', function(e) {
             isDragging = true;
             startX = e.clientX;
             startY = e.clientY;
-            origRight = parseInt(window.getComputedStyle(controlPanel).right);
-            origTop = parseInt(window.getComputedStyle(controlPanel).top);
-            e.preventDefault();
+            left = panel.offsetLeft;
+            top = panel.offsetTop;
         });
-
-        panelDrag.addEventListener('touchstart', function(e) {
+        dragHandle.addEventListener('touchstart', function(e) {
             isDragging = true;
-            const touch = e.touches[0];
-            startX = touch.clientX;
-            startY = touch.clientY;
-            origRight = parseInt(window.getComputedStyle(controlPanel).right);
-            origTop = parseInt(window.getComputedStyle(controlPanel).top);
-            e.preventDefault();
-        });
+            const t = e.touches[0];
+            startX = t.clientX;
+            startY = t.clientY;
+            left = panel.offsetLeft;
+            top = panel.offsetTop;
+        }, { passive: true });
 
         // 拖动中
-        function movePanel(e) {
+        document.addEventListener('mousemove', function(e) {
             if (!isDragging) return;
-            let x, y;
-            if (e.type === 'touchmove') {
-                x = e.touches[0].clientX;
-                y = e.touches[0].clientY;
-            } else {
-                x = e.clientX;
-                y = e.clientY;
-            }
-
-            const dx = x - startX;
-            const dy = y - startY;
-
-            // 固定右上角拖动
-            controlPanel.style.right = (origRight - dx) + "px";
-            controlPanel.style.top = (origTop + dy) + "px";
-            controlPanel.style.left = "auto";
-        }
-
-        document.addEventListener('mousemove', movePanel);
-        document.addEventListener('touchmove', movePanel, { passive: false });
+            const x = left + e.clientX - startX;
+            const y = top + e.clientY - startY;
+            panel.style.left = x + "px";
+            panel.style.top = y + "px";
+            panel.style.right = "auto";
+        });
+        document.addEventListener('touchmove', function(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            const t = e.touches[0];
+            const x = left + t.clientX - startX;
+            const y = top + t.clientY - startY;
+            panel.style.left = x + "px";
+            panel.style.top = y + "px";
+            panel.style.right = "auto";
+        }, { passive: false });
 
         // 结束拖动
-        function endDrag() {
-            isDragging = false;
-        }
-        document.addEventListener('mouseup', endDrag);
-        document.addEventListener('touchend', endDrag);
-        document.addEventListener('mouseleave', endDrag);
+        document.addEventListener('mouseup', function() { isDragging = false; });
+        document.addEventListener('touchend', function() { isDragging = false; });
+        document.addEventListener('touchcancel', function() { isDragging = false; });
 
-        // ======================
-        // 展开/收起（向右下展开）
-        // ======================
-        toggleBtn.addEventListener('click', function() {
-            const isHidden = panelContent.style.display === 'none';
-            panelContent.style.display = isHidden ? 'block' : 'none';
-            toggleBtn.textContent = isHidden ? "▲" : "▼";
+        // 展开/收起
+        toggle.addEventListener('click', function() {
+            const hidden = content.style.display === 'none';
+            content.style.display = hidden ? 'block' : 'none';
+            toggle.textContent = hidden ? "▲" : "▼";
         });
     }
 
-    // ==============================================
-    // 2. 主弹窗：data-modal 
-    // ==============================================
+    // ===========================
+    // 2. ✅ 你的原版完美缩放 + 移动（完整移植）
+    // ===========================
+    (function() {
+        function initControls() {
+            let graphContainer = document.querySelector('.mxgraph > div');
+            if (!graphContainer) graphContainer = document.querySelector('.mxgraph');
+            if (!graphContainer) return false;
+
+            let graphContent = graphContainer.children[0];
+            if (!graphContent) return false;
+
+            let originalWidth = graphContent.clientWidth;
+            let originalHeight = graphContent.clientHeight;
+            if (originalWidth === 0 || originalHeight === 0) {
+                originalWidth = graphContainer.clientWidth;
+                originalHeight = graphContainer.clientHeight;
+            }
+
+            graphContainer.style.position = 'relative';
+            graphContainer.style.overflow = 'auto';
+            graphContainer.style.webkitOverflowScrolling = 'touch';
+
+            let placeholder = document.createElement('div');
+            placeholder.style.width = originalWidth + 'px';
+            placeholder.style.height = originalHeight + 'px';
+            placeholder.style.pointerEvents = 'none';
+            graphContainer.appendChild(placeholder);
+
+            graphContent.style.position = 'absolute';
+            graphContent.style.top = '0';
+            graphContent.style.left = '0';
+            graphContent.style.transformOrigin = '0 0';
+
+            let scale = 1;
+            const step = 0.2;
+            const minScale = 0.2;
+            const maxScale = 3;
+            const panStep = 50;
+
+            function updateScale() {
+                graphContent.style.transform = `scale(${scale})`;
+                placeholder.style.width = (originalWidth * scale) + 'px';
+                placeholder.style.height = (originalHeight * scale) + 'px';
+            }
+
+            document.getElementById('zoomInBtn').addEventListener('click', function() {
+                scale = Math.min(scale + step, maxScale);
+                updateScale();
+            });
+            document.getElementById('zoomOutBtn').addEventListener('click', function() {
+                scale = Math.max(scale - step, minScale);
+                updateScale();
+            });
+            document.getElementById('zoomResetBtn').addEventListener('click', function() {
+                scale = 1;
+                updateScale();
+            });
+
+            document.getElementById('panUpBtn').addEventListener('click', function() {
+                graphContainer.scrollTop -= panStep;
+            });
+            document.getElementById('panDownBtn').addEventListener('click', function() {
+                graphContainer.scrollTop += panStep;
+            });
+            document.getElementById('panLeftBtn').addEventListener('click', function() {
+                graphContainer.scrollLeft -= panStep;
+            });
+            document.getElementById('panRightBtn').addEventListener('click', function() {
+                graphContainer.scrollLeft += panStep;
+            });
+
+            return true;
+        }
+
+        if (!initControls()) {
+            const interval = setInterval(function() {
+                if (initControls()) clearInterval(interval);
+            }, 500);
+        }
+    })();
+
+    // ===========================
+    // 3. 主弹窗
+    // ===========================
     const tipsModal = document.getElementById('tipsModal');
-    const tipsToggleBtn = document.getElementById('tipsToggleBtn');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-    const feedbackBtn = document.getElementById('feedbackBtn');
-    const modalMode = document.body.getAttribute('data-modal');
+    const tipsToggle = document.getElementById('tipsToggleBtn');
+    const closeModal = document.getElementById('closeModalBtn');
+    const modalMode = document.body.dataset.modal;
 
-    function closeModal() {
-        if (tipsModal) tipsModal.style.display = 'none';
-        if (tipsToggleBtn) tipsToggleBtn.style.display = 'flex';
-    }
+    const setModalVisible = (show) => {
+        if (tipsModal) tipsModal.style.display = show ? 'flex' : 'none';
+        if (tipsToggle) tipsToggle.style.display = show ? 'none' : 'flex';
+    };
 
-    function openModal() {
-        if (tipsModal) tipsModal.style.display = 'flex';
-        if (tipsToggleBtn) tipsToggleBtn.style.display = 'none';
-    }
+    setModalVisible(modalMode === 'open');
+    if (closeModal) closeModal.onclick = () => setModalVisible(false);
+    if (tipsToggle) tipsToggle.onclick = () => setModalVisible(true);
 
-    // 修复位置：这里现在 100% 生效
-    if (modalMode === 'open') {
-        openModal();
-    } else {
-        closeModal();
-    }
-
-    if (closeModalBtn) {
-        closeModalBtn.addEventListener('click', closeModal);
-    }
-    if (tipsToggleBtn) {
-        tipsToggleBtn.addEventListener('click', openModal);
-    }
-
-    // ==============================================
-    // 3. 致谢弹窗
-    // ==============================================
+    // ===========================
+    // 4. 致谢弹窗
+    // ===========================
     const thanksTag = document.querySelector('.thanks-tag');
     const thanksModal = document.getElementById('thanksModal');
-    const thanksCloseBtn = document.getElementById('closeThanksBtn');
+    const closeThanks = document.getElementById('closeThanksBtn');
 
-    if (thanksTag && thanksModal) {
-        thanksTag.addEventListener('click', function() {
-            thanksModal.style.display = 'flex';
-        });
-    }
-
-    if (thanksCloseBtn && thanksModal) {
-        thanksCloseBtn.addEventListener('click', function() {
-            thanksModal.style.display = 'none';
-        });
-    }
-
-    // 点击外部关闭
-    if (thanksModal) {
-        thanksModal.addEventListener('click', function(e) {
-            if (e.target === thanksModal) {
-                thanksModal.style.display = 'none';
-            }
-        });
-    }
-
-
-    // ==============================================
-    // 4. 图表缩放平移（配合 diagrams.net）
-    // ==============================================
-    const graph = document.querySelector('.mxgraph');
-    if (!graph) return;
-
-    const zoomIn = document.getElementById('zoomInBtn');
-    const zoomOut = document.getElementById('zoomOutBtn');
-    const zoomReset = document.getElementById('zoomResetBtn');
-    const panUp = document.getElementById('panUpBtn');
-    const panDown = document.getElementById('panDownBtn');
-    const panLeft = document.getElementById('panLeftBtn');
-    const panRight = document.getElementById('panRightBtn');
-
-    let scale = 1;
-    const step = 0.1;
-
-    if (zoomIn) zoomIn.addEventListener('click', () => { scale += step; graph.style.transform = `scale(${scale})`; });
-    if (zoomOut) zoomOut.addEventListener('click', () => { scale -= step; graph.style.transform = `scale(${scale})`; });
-    if (zoomReset) zoomReset.addEventListener('click', () => { scale = 1; graph.style.transform = `scale(1)`; });
-
-    const panStep = 50;
-    if (panUp) panUp.addEventListener('click', () => graph.scrollTop -= panStep);
-    if (panDown) panDown.addEventListener('click', () => graph.scrollTop += panStep);
-    if (panLeft) panLeft.addEventListener('click', () => graph.scrollLeft -= panStep);
-    if (panRight) panRight.addEventListener('click', () => graph.scrollLeft += panStep);
+    if (thanksTag) thanksTag.onclick = () => { thanksModal.style.display = 'flex'; };
+    if (closeThanks) closeThanks.onclick = () => { thanksModal.style.display = 'none'; };
+    if (thanksModal) thanksModal.onclick = (e) => {
+        if (e.target === thanksModal) thanksModal.style.display = 'none';
+    };
 });
