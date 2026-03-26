@@ -1,9 +1,8 @@
-// ========== 最终整合版：你的完美缩放 + 面板拖动 + 弹窗 ==========
 document.addEventListener('DOMContentLoaded', function() {
     'use strict';
 
     // ===========================
-    // 1. 控制面板拖动 + 展开收起（右上角初始）
+    // 1. 控制面板拖动 + 展开收起
     // ===========================
     const panel = document.getElementById('controlPanel');
     if (panel) {
@@ -73,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ===========================
-    // 2. ✅ 你的原版完美缩放 + 移动（完整移植）
+    // 2. 缩放 + 移动
     // ===========================
     (function() {
         function initControls() {

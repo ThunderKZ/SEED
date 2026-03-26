@@ -1,3 +1,7 @@
+.mxgraph {
+    margin: 0 auto;
+    width: fit-content;   /* 确保宽度不是100% */
+}
 .tips-modal {
     position: fixed;
     top: 0;
