@@ -114,6 +114,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (originalWidth === 0) originalWidth = 1400;  // fallback
     if (originalHeight === 0) originalHeight = 1800;
 
+    const viewportW = window.innerWidth;
+    const viewportH = window.innerHeight;
+    const scaleW = viewportW / originalWidth;
+    const scaleH = viewportH / originalHeight;
+    let fitScale = Math.min(scaleW, scaleH, 1);   // 只缩小，不放大
+    let scale = fitScale;
+
     // 改造容器结构：相对定位 + 绝对定位内容 + 占位符撑开滚动区域
     graphContainer.style.position = 'relative';
     graphContainer.style.overflow = 'auto';
