@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
     graphContent.style.transformOrigin = '0 0';
     graphContent.style.willChange = 'transform';
 
-    let scale = 1;
+    // let scale = 1;
     const MIN_SCALE = 0.3;
     const MAX_SCALE = 4.0;
 
