@@ -114,6 +114,19 @@ document.addEventListener('DOMContentLoaded', function() {
     if (originalWidth === 0) originalWidth = 1400;  // fallback
     if (originalHeight === 0) originalHeight = 1800;
 
+
+    // ↓↓↓ 插入适配代码 ↓↓↓
+// 自动适配屏幕最长边（仅当图表比屏幕大时缩小）
+const viewportW = window.innerWidth;
+const viewportH = window.innerHeight;
+// 计算宽高分别适配屏幕的比例
+const scaleW = viewportW / originalWidth;
+const scaleH = viewportH / originalHeight;
+// 取较小比例保证两边都不溢出，且不超过1（不放大原本比屏幕小的图表）
+let fitScale = Math.min(scaleW, scaleH, 1);
+let scale = fitScale;   // 覆盖原来的 scale = 1
+// ↑↑↑ 适配代码结束 ↑↑
+
     // 改造容器结构：相对定位 + 绝对定位内容 + 占位符撑开滚动区域
     graphContainer.style.position = 'relative';
     graphContainer.style.overflow = 'auto';
@@ -321,6 +334,21 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target === thanksModal) thanksModal.style.display = 'none';
     };
 });
+
+// 浮动滚动按钮：页面级平滑滚动
+const topBtn = document.getElementById('scrollToTopBtn');
+const bottomBtn = document.getElementById('scrollToBottomBtn');
+if (topBtn) {
+    topBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+if (bottomBtn) {
+    bottomBtn.addEventListener('click', () => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    });
+}
+
 window.addEventListener('load', function () {
   document.documentElement.classList.add('loaded');
 });
