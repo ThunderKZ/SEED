@@ -113,20 +113,14 @@ document.addEventListener('DOMContentLoaded', function() {
     let originalHeight = graphContent.clientHeight || graphContent.scrollHeight;
     if (originalWidth === 0) originalWidth = 1400;  // fallback
     if (originalHeight === 0) originalHeight = 1800;
-
-
-    // ↓↓↓ 插入适配代码 ↓↓↓
-// 自动适配屏幕最长边（仅当图表比屏幕大时缩小）
+// ========== 新增：自动适配屏幕最长边 ==========
 const viewportW = window.innerWidth;
 const viewportH = window.innerHeight;
-// 计算宽高分别适配屏幕的比例
 const scaleW = viewportW / originalWidth;
 const scaleH = viewportH / originalHeight;
-// 取较小比例保证两边都不溢出，且不超过1（不放大原本比屏幕小的图表）
-let fitScale = Math.min(scaleW, scaleH, 1);
-let scale = fitScale;   // 覆盖原来的 scale = 1
-// ↑↑↑ 适配代码结束 ↑↑
-
+let fitScale = Math.min(scaleW, scaleH, 1);   // 只缩小，不放大
+let scale = fitScale;
+// ===========================================
     // 改造容器结构：相对定位 + 绝对定位内容 + 占位符撑开滚动区域
     graphContainer.style.position = 'relative';
     graphContainer.style.overflow = 'auto';
@@ -333,60 +327,7 @@ let scale = fitScale;   // 覆盖原来的 scale = 1
     if (thanksModal) thanksModal.onclick = (e) => {
         if (e.target === thanksModal) thanksModal.style.display = 'none';
     };
-    
-    // 浮动滚动按钮：页面级平滑滚动
-const topBtn = document.getElementById('scrollToTopBtn');
-const bottomBtn = document.getElementById('scrollToBottomBtn');
-if (topBtn) {
-    topBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-}
-if (bottomBtn) {
-    bottomBtn.addEventListener('click', () => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    });
-}
-
-// ===========================
-// 弹窗控制（修复无法收起）
-// ===========================
-const tipsModal = document.getElementById('tipsModal');
-const tipsToggle = document.getElementById('tipsToggleBtn');
-const closeModalBtn = document.getElementById('closeModalBtn');
-const feedbackBtn = document.getElementById('feedbackBtn');
-
-if (tipsModal && closeModalBtn) {
-    // 关闭弹窗
-    closeModalBtn.onclick = function() {
-        tipsModal.style.display = 'none';
-        if (tipsToggle) tipsToggle.style.display = 'flex';
-    };
-    // 再次打开（右下角按钮）
-    if (tipsToggle) {
-        tipsToggle.onclick = function() {
-            tipsModal.style.display = 'flex';
-            tipsToggle.style.display = 'none';
-        };
-    }
-    // 反馈按钮（新窗口打开）
-    if (feedbackBtn) {
-        feedbackBtn.onclick = function() {
-            window.open('https://v.wjx.cn/vm/Yk92DWx.aspx', '_blank');
-        };
-    }
-    // 初始状态：根据 body 属性决定是否显示
-    const modalMode = document.body.getAttribute('data-modal');
-    if (modalMode === 'open') {
-        tipsModal.style.display = 'flex';
-        if (tipsToggle) tipsToggle.style.display = 'none';
-    } else {
-        tipsModal.style.display = 'none';
-        if (tipsToggle) tipsToggle.style.display = 'flex';
-    }
-}
 });
-
 
 window.addEventListener('load', function () {
   document.documentElement.classList.add('loaded');
