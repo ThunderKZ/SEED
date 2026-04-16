@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const scaleH = viewportH / originalHeight;
     let fitScale = Math.min(scaleW, scaleH, 1);   // 只缩小，不放大
     let scale = fitScale;
-
+    const INIT_FIT_SCALE = fitScale; 
     // 改造容器结构：相对定位 + 绝对定位内容 + 占位符撑开滚动区域
     graphContainer.style.position = 'relative';
     graphContainer.style.overflow = 'auto';
@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (zoomIn) zoomIn.addEventListener('click', () => setScaleWithCenter(scale + 0.2, window.innerWidth/2, window.innerHeight/2));
     if (zoomOut) zoomOut.addEventListener('click', () => setScaleWithCenter(scale - 0.2, window.innerWidth/2, window.innerHeight/2));
-    if (zoomReset) zoomReset.addEventListener('click', () => setScaleWithCenter(1, window.innerWidth/2, window.innerHeight/2));
+    if (zoomReset) zoomReset.addEventListener('click', () => setScaleWithCenter(INIT_FIT_SCALE, window.innerWidth/2, window.innerHeight/2));
 
     const step = 80;
     if (panUp) panUp.addEventListener('click', () => graphContainer.scrollTop -= step);
