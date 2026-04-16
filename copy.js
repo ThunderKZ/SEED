@@ -97,19 +97,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-// 浮动滚动按钮：页面级平滑滚动
-const topBtn = document.getElementById('scrollToTopBtn');
-const bottomBtn = document.getElementById('scrollToBottomBtn');
-if (topBtn) {
-    topBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-}
-if (bottomBtn) {
-    bottomBtn.addEventListener('click', () => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    });
-}
 // ===========================
 // 2. 缩放 + 移动（支持双指缩放/单指拖拽 + 保留按钮）
 // ===========================
@@ -346,6 +333,7 @@ let scale = fitScale;   // 覆盖原来的 scale = 1
     if (thanksModal) thanksModal.onclick = (e) => {
         if (e.target === thanksModal) thanksModal.style.display = 'none';
     };
+    
 });
 
 
