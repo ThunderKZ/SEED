@@ -1,6 +1,12 @@
 .mxgraph {
-    margin: 0 auto;
-    width: fit-content;   /* 确保宽度不是100% */
+    border: 3px solid #2c5a9e;
+    border-radius: 16px;
+    background: #f0f5ff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    
+    max-height: 85vh;          /* 可根据需要调整（如 60vh 或 75vh） */
+    overflow: auto;            /* 确保内部滚动条出现 */
+    
 }
 .tips-modal {
     position: fixed;
