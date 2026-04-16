@@ -334,6 +334,19 @@ let scale = fitScale;   // 覆盖原来的 scale = 1
         if (e.target === thanksModal) thanksModal.style.display = 'none';
     };
     
+    // 浮动滚动按钮：页面级平滑滚动
+const topBtn = document.getElementById('scrollToTopBtn');
+const bottomBtn = document.getElementById('scrollToBottomBtn');
+if (topBtn) {
+    topBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+if (bottomBtn) {
+    bottomBtn.addEventListener('click', () => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    });
+}
 });
 
 
