@@ -347,6 +347,44 @@ if (bottomBtn) {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     });
 }
+
+// ===========================
+// 弹窗控制（修复无法收起）
+// ===========================
+const tipsModal = document.getElementById('tipsModal');
+const tipsToggle = document.getElementById('tipsToggleBtn');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const feedbackBtn = document.getElementById('feedbackBtn');
+
+if (tipsModal && closeModalBtn) {
+    // 关闭弹窗
+    closeModalBtn.onclick = function() {
+        tipsModal.style.display = 'none';
+        if (tipsToggle) tipsToggle.style.display = 'flex';
+    };
+    // 再次打开（右下角按钮）
+    if (tipsToggle) {
+        tipsToggle.onclick = function() {
+            tipsModal.style.display = 'flex';
+            tipsToggle.style.display = 'none';
+        };
+    }
+    // 反馈按钮（新窗口打开）
+    if (feedbackBtn) {
+        feedbackBtn.onclick = function() {
+            window.open('https://v.wjx.cn/vm/Yk92DWx.aspx', '_blank');
+        };
+    }
+    // 初始状态：根据 body 属性决定是否显示
+    const modalMode = document.body.getAttribute('data-modal');
+    if (modalMode === 'open') {
+        tipsModal.style.display = 'flex';
+        if (tipsToggle) tipsToggle.style.display = 'none';
+    } else {
+        tipsModal.style.display = 'none';
+        if (tipsToggle) tipsToggle.style.display = 'flex';
+    }
+}
 });
 
 
