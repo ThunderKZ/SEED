@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 基于缩放中心设置新缩放（保持视觉点不变）
     function setScaleWithCenter(newScale, centerX, centerY) {
         let oldScale = scale;
-        let clamped = Math.min(MAX_SCALE, Math.max(MIN_SCALE, newScale));
+        let clamped = Math.min(MAX_SCALE, Math.max(INIT_FIT_SCALE, newScale));
         if (clamped === scale) return;
         const rect = graphContainer.getBoundingClientRect();
         const scrollLeftBefore = graphContainer.scrollLeft;
@@ -281,9 +281,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const panRight = document.getElementById('panRightBtn');
 
     if (zoomIn) zoomIn.addEventListener('click', () => setScaleWithCenter(scale + 0.2, window.innerWidth/2, window.innerHeight/2));
-    if (zoomOut) zoomOut.addEventListener('click', () => setScaleWithCenter(scale - 0.2, window.innerWidth/2, window.innerHeight/2));
+    if (zoomOut) {zoomOut.addEventListener('click', () => {let newScale = Math.max(INIT_FIT_SCALE, scale - 0.2);setScaleWithCenter(newScale, window.innerWidth/2, window.innerHeight/2);});}
     if (zoomReset) zoomReset.addEventListener('click', () => setScaleWithCenter(INIT_FIT_SCALE, window.innerWidth/2, window.innerHeight/2));
-
     const step = 80;
     if (panUp) panUp.addEventListener('click', () => graphContainer.scrollTop -= step);
     if (panDown) panDown.addEventListener('click', () => graphContainer.scrollTop += step);
