@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleBtn.addEventListener('click', function(e) {
             e.stopPropagation(); // 阻止事件冒泡，避免误触
             const isHidden = content.style.display === 'none';
-            // 始终基于实时的panelRight定位，绝不重置为初始值，避免瞬移
+            // 始终基于实时的panelRight定位，避免瞬移
             panel.style.right = panelRight + 'px';
             panel.style.left = 'auto'; // 强制切回right定位，保证左下展开/右上收起
             if (isHidden) {
@@ -288,10 +288,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const zoomIn = document.getElementById('zoomInBtn');
         const zoomOut = document.getElementById('zoomOutBtn');
         const zoomReset = document.getElementById('zoomResetBtn');
-        const panUp = document.getElementById('panUpBtn');
-        const panDown = document.getElementById('panDownBtn');
-        const panLeft = document.getElementById('panLeftBtn');
-        const panRight = document.getElementById('panRightBtn');
 
         if (zoomIn) zoomIn.addEventListener('click', () => setScaleWithCenter(scale + 0.2, window.innerWidth/2, window.innerHeight/2));
         if (zoomOut) {
@@ -302,10 +298,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (zoomReset) zoomReset.addEventListener('click', () => setScaleWithCenter(INIT_FIT_SCALE, window.innerWidth/2, window.innerHeight/2));
         const step = 80;
-        if (panUp) panUp.addEventListener('click', () => graphContainer.scrollTop -= step);
-        if (panDown) panDown.addEventListener('click', () => graphContainer.scrollTop += step);
-        if (panLeft) panLeft.addEventListener('click', () => graphContainer.scrollLeft -= step);
-        if (panRight) panRight.addEventListener('click', () => graphContainer.scrollLeft += step);
     })();
 
     // ===========================
