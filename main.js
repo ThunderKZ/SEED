@@ -305,43 +305,47 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===========================
     const tipsModal = document.getElementById('tipsModal');
     const tipsToggle = document.getElementById('tipsToggleBtn');
-    const closeModal = document.getElementById('closeModalBtn');
-    const feedbackBtn = document.getElementById('feedbackBtn'); // 补充获取feedbackBtn
-    const modalMode = document.body.dataset?.modal || 'close'; // 兼容不存在data-modal的情况，默认关闭
-    const FEEDBACK_URL = 'https://v.wjx.cn/vm/Yk92DWx.aspx'; 
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const feedbackBtn = document.getElementById('feedbackBtn');
+    const FEEDBACK_URL = 'https://v.wjx.cn/vm/Yk92DWx.aspx';
 
-    // 封装弹窗显示/隐藏函数，增加容错
+    // 从 data-modal 属性读取初始状态（默认为 'close'）
+    const modalMode = document.body.dataset?.modal || 'close';
+
+    // 统一的显示/隐藏函数（同时控制弹窗和角落按钮）
     const setModalVisible = (show) => {
-        if (!tipsModal || !tipsToggle) return; // 元素不存在时直接返回
+        if (!tipsModal || !tipsToggle) return;
         tipsModal.style.display = show ? 'flex' : 'none';
-        tipsToggle.style.display = show ? 'none' : 'flex';
+        // 注意：引导运行时我们可能强制隐藏角落按钮，所以这里用条件判断
+        if (!window._isGuideRunning) {
+            tipsToggle.style.display = show ? 'none' : 'flex';
+        }
     };
 
-    // 初始化弹窗状态（修复默认弹出问题）
+    // 初始化弹窗状态
     setModalVisible(modalMode === 'open');
 
-    // 绑定关闭事件（增加容错，避免元素不存在报错）
-    if (closeModal) {
-        closeModal.onclick = () => {
+    // 关闭按钮
+    if (closeModalBtn) {
+        closeModalBtn.onclick = () => {
             setModalVisible(false);
         };
     }
 
-    // 绑定切换事件（增加容错）
+    // 角落切换按钮（点击后切换弹窗显示）
     if (tipsToggle) {
         tipsToggle.onclick = () => {
-            // 切换状态：当前显示则隐藏，反之显示
             const isVisible = tipsModal?.style.display === 'flex';
             setModalVisible(!isVisible);
         };
     }
 
-    // 绑定反馈按钮事件（增加容错）
+    // 意见反馈
     if (feedbackBtn) {
         feedbackBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // 阻止冒泡影响其他元素
-            window.open(FEEDBACK_URL, '_blank'); 
-            // 可选：跳转后自动关闭弹窗
+            e.stopPropagation();
+            window.open(FEEDBACK_URL, '_blank');
+            // 如果需要关闭弹窗，取消下面注释
             // setModalVisible(false);
         });
     }

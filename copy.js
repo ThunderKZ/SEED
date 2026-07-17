@@ -313,46 +313,52 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===========================
     const tipsModal = document.getElementById('tipsModal');
     const tipsToggle = document.getElementById('tipsToggleBtn');
-    const closeModal = document.getElementById('closeModalBtn');
-    const feedbackBtn = document.getElementById('feedbackBtn'); // 补充获取feedbackBtn
-    const modalMode = document.body.dataset?.modal || 'close'; // 兼容不存在data-modal的情况，默认关闭
-    const FEEDBACK_URL = 'https://v.wjx.cn/vm/Yk92DWx.aspx'; 
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const feedbackBtn = document.getElementById('feedbackBtn');
+    const FEEDBACK_URL = 'https://v.wjx.cn/vm/Yk92DWx.aspx';
 
-    // 封装弹窗显示/隐藏函数，增加容错
+    // 从 data-modal 属性读取初始状态（默认为 'close'）
+    const modalMode = document.body.dataset?.modal || 'close';
+
+    // 统一的显示/隐藏函数（同时控制弹窗和角落按钮）
     const setModalVisible = (show) => {
-        if (!tipsModal || !tipsToggle) return; // 元素不存在时直接返回
+        if (!tipsModal || !tipsToggle) return;
         tipsModal.style.display = show ? 'flex' : 'none';
-        tipsToggle.style.display = show ? 'none' : 'flex';
+        // 注意：引导运行时我们可能强制隐藏角落按钮，所以这里用条件判断
+        if (!window._isGuideRunning) {
+            tipsToggle.style.display = show ? 'none' : 'flex';
+        }
     };
 
-    // 初始化弹窗状态（修复默认弹出问题）
+    // 初始化弹窗状态
     setModalVisible(modalMode === 'open');
 
-    // 绑定关闭事件（增加容错，避免元素不存在报错）
-    if (closeModal) {
-        closeModal.onclick = () => {
+    // 关闭按钮
+    if (closeModalBtn) {
+        closeModalBtn.onclick = () => {
             setModalVisible(false);
         };
     }
 
-    // 绑定切换事件（增加容错）
+    // 角落切换按钮（点击后切换弹窗显示）
     if (tipsToggle) {
         tipsToggle.onclick = () => {
-            // 切换状态：当前显示则隐藏，反之显示
             const isVisible = tipsModal?.style.display === 'flex';
             setModalVisible(!isVisible);
         };
     }
 
-    // 绑定反馈按钮事件（增加容错）
+    // 意见反馈
     if (feedbackBtn) {
         feedbackBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // 阻止冒泡影响其他元素
-            window.open(FEEDBACK_URL, '_blank'); 
-            // 可选：跳转后自动关闭弹窗
+            e.stopPropagation();
+            window.open(FEEDBACK_URL, '_blank');
+            // 如果需要关闭弹窗，取消下面注释
             // setModalVisible(false);
         });
     }
+
+
 
     // ===========================
     // 4. 致谢弹窗（增加容错）
@@ -378,6 +384,136 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
     }
+
+    (function() {
+      // ==========================================
+      // 1. 配置：你的 base64 前缀（请替换为实际前缀）
+      // ==========================================
+      const PREFIX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAmYAAAIgCAYAAAAvLaX7AACAAElEQVR4Xuy90a9'; // 你的前缀
+
+      // ==========================================
+      // 2. 等待 diagrams.net 渲染完成
+      // ==========================================
+      function waitForDiagram(callback) {
+        const container = document.querySelector('.mxgraph');
+        if (!container) {
+          console.warn('未找到 .mxgraph 容器，等待中...');
+          setTimeout(() => waitForDiagram(callback), 300);
+          return;
+        }
+
+        // 使用 MutationObserver 监听 SVG 出现
+        const observer = new MutationObserver(() => {
+          const svg = container.querySelector('svg');
+          if (svg) {
+            observer.disconnect();
+            // 等待 image 元素稳定（可能延迟插入）
+            waitForImage(callback);
+          }
+        });
+        observer.observe(container, { childList: true, subtree: true });
+
+        // 如果 SVG 已存在，直接进入等待 image
+        if (container.querySelector('svg')) {
+          observer.disconnect();
+          waitForImage(callback);
+        }
+      }
+
+      // ==========================================
+      // 3. 等待 image 元素出现（轮询检测）
+      // ==========================================
+      function waitForImage(callback) {
+        let attempts = 0;
+        const maxAttempts = 30; // 最多 6 秒 (30 * 200ms)
+        const check = setInterval(() => {
+          attempts++;
+          // 只要有任何 image 元素存在，就认为渲染完成
+          const img = document.querySelector('image');
+          if (img || attempts > maxAttempts) {
+            clearInterval(check);
+            if (img) {
+              console.log('✅ 检测到 image 元素，开始查找目标...');
+              setTimeout(callback, 200); // 额外延迟确保布局稳定
+            } else {
+              console.warn('⚠️ 超时：未检测到任何 image 元素，可能没有图片节点');
+              callback(); // 仍然尝试执行，但可能找不到目标
+            }
+          }
+        }, 200);
+      }
+
+      // ==========================================
+      // 4. 遍历所有 image 元素，通过 href 属性匹配前缀（最稳健）
+      // ==========================================
+      function findImageByPrefix(prefix) {
+        const images = document.querySelectorAll('image');
+        console.log(`🔍 共找到 ${images.length} 个 image 元素`);
+        for (let i = 0; i < images.length; i++) {
+          const img = images[i];
+          // 尝试获取 href 属性（标准属性或命名空间属性）
+          const href = img.getAttribute('href') || img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+          console.log(`  图片${i+1} href 开头:`, href ? href.substring(0, 60) + '...' : '(无href)');
+          if (href && href.startsWith(prefix)) {
+            console.log(`✅ 找到匹配的图片：`, img);
+            // 返回其外层可交互元素（a 或 g），便于高亮
+            const parent = img.closest('a, g');
+            return parent || img;
+          }
+        }
+        console.error('❌ 未找到任何匹配的 image 元素，请检查前缀是否正确。');
+        return null;
+      }
+
+      // ==========================================
+      // 5. 主逻辑：等待渲染 → 查找目标 → 启动引导
+      // ==========================================
+      waitForDiagram(function() {
+        const target = findImageByPrefix(PREFIX);
+        if (!target) {
+          console.error('❌ 无法定位目标元素，引导终止。');
+          return;
+        }
+
+        // 检查 Driver.js 是否加载成功
+        if (typeof window.driver === 'undefined' || typeof window.driver.js === 'undefined') {
+          console.error('❌ Driver.js 未正确加载，请检查网络。');
+          return;
+        }
+
+        // 创建 Driver 实例（新版 API，不要用 new）
+        const driver = window.driver.js.driver({
+          showProgress: true,
+          animate: true,
+          opacity: 0.75,
+          padding: 10,
+          allowClose: false,
+          steps: [
+            {
+              element: target,   // 直接传入 DOM 元素
+              popover: {
+                title: '🎯 目标已定位',
+                description: '这是通过遍历 image 找到的图片节点！',
+                position: 'bottom'
+              },
+              onHighlight: (el) => el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            }
+            // 可以继续添加更多步骤
+          ],
+          doneBtnText: '完成',
+          closeBtnText: '跳过',
+          nextBtnText: '下一步 →',
+          prevBtnText: '← 上一步'
+        });
+
+        // 启动引导
+        driver.drive();
+        console.log('🚀 引导已启动');
+      });
+
+    })();
+
+
 });
 
 window.addEventListener('load', function () {
