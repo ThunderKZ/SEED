@@ -66,7 +66,7 @@
     // ==========================================
     const stepConfigs = [
       {
-        prefix: 'https://seed-plot-sequence.speculumor.qzz.io/images/img_0c6323a662b2af04.png',
+        prefix: 'img_dcc7ef18e03f0096.png',
         popover: {
           title: '主要剧情顺序',
           description: '请按照箭头顺序进行观看以获得最佳观看体验',
@@ -74,28 +74,28 @@
         }
       },
       {
-        prefix: 'https://seed-plot-sequence.speculumor.qzz.io/images/img_449d1802f89ee55e.png',
+        prefix: 'img_e0d73cff1f47a0cc.png',
         popover: {
           title: '主线剧情',
           description: '长条形为故事历程·主线和漫巡剧情，是故事主干',
         }
       },
       {
-        prefix: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUoAAASoAQMAAAD4imLqAAAAAXNSR0IArs4c6QAAAARnQ',
+        prefix: 'img_f1b3ce101dc6f737.png',
         popover: {
           title: '活动剧情',
           description: '方形为活动剧情，标注“间章”的是主线的重要分支',
         }
       },
       {
-        prefix: 'https://seed-plot-sequence.speculumor.qzz.io/images/img_db8e18677c8a5068.png',
+        prefix: 'img_2137c7bbf4e84ac8.png',
         popover: {
           title: 'wiki链接',
           description: '点击跳转白荆回廊wiki'
         }
       },
       {
-        prefix: 'https://seed-plot-sequence.speculumor.qzz.io/images/img_c0894aada8bf1d9c.png',
+        prefix: 'img_77268cac1c222069.png',
         popover: {
           title: '烙痕剧情',
           description:`
@@ -108,28 +108,28 @@
         }
       },
       {
-        prefix: 'https://seed-plot-sequence.speculumor.qzz.io/images/img_69702059134bb64a.png',
+        prefix: 'img_43d4537fa91fa966.png',
         popover: {
           title: '角色镌相/茶憩/看板对话',
           description: '多为剧情主要角色的后日谈，其中看板语音有随机触发的可能，因此不建议在看完剧情前把相关人物放在主界面看板'
         }
       },
       {
-        prefix: 'https://seed-plot-sequence.speculumor.qzz.io/images/img_2cc075a1fd0e462b.png',
+        prefix: 'img_e7d772dade2e3e1c.png',
         popover: {
           title: '黑色实线框',
           description: '内部剧情无硬性先后顺序，可自行决定顺序观看'
         }
       },
       {
-        prefix: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAc0AAAGWCAYAAAAaDNgpAAAF3klEQVR4Xu3VMQEAIBAAI',
+        prefix: 'img_0dd873d0568fdbd0.png',
         popover: {
           title: '蓝色虚线框',
           description: '点击跳转到内部详细剧情说明'
         }
       },
       {
-        prefix: 'https://seed-plot-sequence.speculumor.qzz.io/images/img_ba7e98b68c34de04.png',
+        prefix: 'img_2100897c608a953a.png',
         popover: {
           title: '红色虚线框',
           description: '点击跳转到外部视频链接，包括活动pv/角色pv/相关视频等'
@@ -260,19 +260,23 @@
     // ==========================================
     // 根据前缀查找 image 元素
     // ==========================================
-    function findImageByPrefix(prefix) {
+    // ==========================================
+    // 根据关键字查找 image 元素（支持 base64 前缀、文件名、完整 URL）
+    // ==========================================
+    function findImageByPrefix(keyword) {
       const images = document.querySelectorAll('image');
       for (let i = 0; i < images.length; i++) {
         const img = images[i];
-        const href = img.getAttribute('href') || img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
-        if (href && href.startsWith(prefix)) {
-          console.log(`✅ 找到匹配的图片（前缀: ${prefix.substring(0, 30)}...）`);
-          return img; // 返回原生 image 元素
+        const href = img.getAttribute('href')
+                  || img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+        if (href && href.includes(keyword)) {   // ⭐ startsWith → includes
+          console.log(`✅ 找到匹配的图片（关键字: ${keyword.substring(0, 60)}）`);
+          return img;
         }
       }
-      console.warn(`❌ 未找到前缀为 ${prefix.substring(0, 30)}... 的图片`);
+      console.warn(`❌ 未找到包含 ${keyword.substring(0, 60)} 的图片`);
       return null;
-    }
+    } 
 
     // ==========================================
     // 主逻辑
