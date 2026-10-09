@@ -1,0 +1,99 @@
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=5,IE=9" ><![endif]-->
+<!DOCTYPE html>
+<html>
+<head>
+<title>欢迎~小监督</title>
+<link rel="stylesheet" href="style.css">
+<meta charset="utf-8"/>
+</head>
+
+<body>
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js"></script>
+
+<div class="watermark-container"></div>
+
+<div class="tips-modal" id="tipsModal">
+    <div class="modal-content">
+        <h3 class="modal-title">白荆回廊剧情顺序推荐 4.5</h3>
+        <div class="modal-text">
+            <p>0. 双指捏合/右上角控制面板进行缩放/还原，控制面板可收起展开。点击右下角按钮可以再次阅读该说明；</p>
+            <p>1. 请按照箭头进行主线和活动的游玩，<b>黑色框</b>中的顺序可以按照喜好自行决定；</p>
+            <p>2. <span class="blue-text">蓝色虚线</span>代表该活动有较为复杂的观看顺序，点击跳转到该活动的详情介绍；</p>
+            <p>3. <span class="red-text">红色虚线</span>代表外部链接，点击跳转到活动pv/角色pv/其他b站视频等；</p>
+            <p>4. <b>角色镌相</b>推荐在白荆回廊wiki上查阅，<b>烙痕剧情&角色看板/茶憩</b>推荐在游戏内或b站视频观看；</p>
+            <p>5. 推荐按照<b>活动pv-角色pv（若有）-活动本体-后日谈-相关角色镌相&相关烙痕剧情</b>进行完整剧情体验；</p>
+            <p>6. <b>感谢白荆回廊wiki对游戏内容的整理！</b></p>
+        </div>
+        <div class="modal-btn-group">
+            <button class="close-modal-btn" id="closeModalBtn">进入剧情</button>
+            <button class="feedback-btn" id="feedbackBtn">意见反馈</button>
+            </div>
+    </div>
+</div>
+
+<div class="tips-toggle-btn" id="tipsToggleBtn" style="display: none;">
+    <span>📖</span>
+</div>
+
+<script>
+(function() {
+    const tipsModal = document.getElementById('tipsModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const tipsToggleBtn = document.getElementById('tipsToggleBtn');
+    const feedbackBtn = document.getElementById('feedbackBtn');
+    const MAIN_URL = '剧情顺序.html'; 
+
+    const FEEDBACK_URL = 'https://v.wjx.cn/vm/Yk92DWx.aspx'; 
+
+    let isFirstOpen = true;
+
+    // 关闭弹窗：缩至角落
+    function closeModal() {
+        tipsModal.style.display = 'none';
+        tipsToggleBtn.style.display = 'flex';
+        isFirstOpen = false;
+    }
+
+    // 打开弹窗：展开全屏
+    function openModal() {
+        tipsModal.style.display = 'flex';
+        tipsToggleBtn.style.display = 'none';
+    }
+
+    // 初始状态：首次打开显示弹窗
+    openModal();
+
+    // 点击「我知道了」：缩至角落
+    closeModalBtn.addEventListener('click', () => {
+        closeModal(); // 先关闭弹窗
+        window.location.href = MAIN_URL; // 再跳转本地HTML文件（同窗口打开）
+        // 可选：新标签页打开 → window.open(KNOW_URL, '_blank');
+    });
+
+    // 👇 新增：点击「意见反馈」：跳转至第三方问卷（新标签页打开，不关闭原页面）
+    feedbackBtn.addEventListener('click', () => {
+        window.open(FEEDBACK_URL, '_blank'); 
+        // 可选：跳转后自动缩至角落（取消注释即可）
+        // closeModal();
+    });
+    // 致谢标签点击
+    thanksTag.addEventListener('click', openThanksModal);
+    // 致谢弹窗关闭按钮
+    thanksCloseBtn.addEventListener('click', () => {
+        thanksModal.style.display = 'none';
+    });
+    // 点击角落按钮：重新展开弹窗
+    tipsToggleBtn.addEventListener('click', openModal);
+
+    // 可选：点击遮罩层关闭弹窗
+    // tipsModal.addEventListener('click', (e) => {
+    //     if (e.target === tipsModal) {
+    //         closeModal();
+    //     }
+    // });
+})();
+
+</script>
+
+</body>
+</html>
