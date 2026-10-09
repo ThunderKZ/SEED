@@ -238,23 +238,72 @@
     // ==========================================
     // 等待 image 元素出现（轮询检测）
     // ==========================================
+    // ==========================================
+    // 等待目标图片真正加载完成（不是只等 DOM 元素出现）
+    // ==========================================
     function waitForImage(callback) {
-      let attempts = 0;
-      const maxAttempts = 30;
-      const check = setInterval(() => {
-        attempts++;
-        const img = document.querySelector('image');
-        if (img || attempts > maxAttempts) {
-          clearInterval(check);
-          if (img) {
-            console.log('✅ 检测到 image 元素，开始查找目标...');
-            setTimeout(callback, 200);
-          } else {
-            console.warn('⚠️ 超时：未检测到任何 image 元素，可能没有图片节点');
-            callback();
-          }
+      // 收集所有需要匹配的目标关键字
+      const targets = stepConfigs
+        .filter(c => c.prefix)
+        .map(c => c.prefix);
+
+      if (targets.length === 0) {
+        callback();
+        return;
+      }
+
+      // 从 DOM 里找出所有匹配目标关键字的图片 URL
+      const urlsToLoad = new Set();
+      document.querySelectorAll('image').forEach(img => {
+        const href = img.getAttribute('href')
+                  || img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+        if (href && targets.some(t => href.includes(t))) {
+          urlsToLoad.add(href);
         }
-      }, 200);
+      });
+
+      console.log(`🔍 找到 ${urlsToLoad.size} 张目标图片，开始预加载...`);
+
+      if (urlsToLoad.size === 0) {
+        console.warn('⚠️ 没有匹配到任何目标图片，直接启动引导');
+        callback();
+        return;
+      }
+
+      // 加载状态
+      let loaded = 0;
+      const total = urlsToLoad.size;
+      let done = false;
+
+      // 统一完成回调，防止重复触发
+      const finish = () => {
+        if (done) return;
+        done = true;
+        console.log(`✅ 图片预加载完成 (${loaded}/${total})，启动引导`);
+        setTimeout(callback, 100);   // 稍微延迟，确保浏览器渲染完
+      };
+
+      const onEachLoad = () => {
+        loaded++;
+        console.log(`📷 图片加载进度: ${loaded}/${total}`);
+        if (loaded >= total) finish();
+      };
+
+      // 逐个预加载
+      urlsToLoad.forEach(url => {
+        const img = new Image();
+        img.onload = onEachLoad;
+        img.onerror = onEachLoad;   // 加载失败也算完成，不阻塞引导
+        img.src = url;
+      });
+
+      // 超时兜底：最多等 8 秒
+      setTimeout(() => {
+        if (!done) {
+          console.warn(`⏱️ 图片加载超时 (${loaded}/${total})，继续启动引导`);
+          finish();
+        }
+      }, 8000);
     }
 
     // ==========================================
