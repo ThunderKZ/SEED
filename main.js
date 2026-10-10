@@ -297,7 +297,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         if (zoomReset) zoomReset.addEventListener('click', () => setScaleWithCenter(INIT_FIT_SCALE, window.innerWidth/2, window.innerHeight/2));
-        const step = 80;
     })();
 
     // ===========================
@@ -321,6 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
             tipsToggle.style.display = show ? 'none' : 'flex';
         }
     };
+    window.setModalVisible = setModalVisible;
 
     // 初始化弹窗状态
     setModalVisible(modalMode === 'open');
@@ -355,16 +355,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===========================
     const thanksTag = document.querySelector('.thanks-tag');
     const thanksModal = document.getElementById('thanksModal');
-    const closeThanks = document.getElementById('closeThanksBtn');
 
     if (thanksTag && thanksModal) {
         thanksTag.onclick = () => { 
             thanksModal.style.display = 'flex'; 
-        };
-    }
-    if (closeThanks && thanksModal) {
-        closeThanks.onclick = () => { 
-            thanksModal.style.display = 'none'; 
         };
     }
     if (thanksModal) {

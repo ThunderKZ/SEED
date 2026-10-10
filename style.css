@@ -317,3 +317,30 @@
         font-size: 29px;
     }
 }
+
+/* ===== 引导"跳过"悬浮按钮 ===== */
+.guide-skip-btn {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 100000;              /* 高于 Driver.js 遮罩（通常 9999+） */
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  color: #4b5563;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(6px);
+  transition: all 0.15s ease;
+}
+.guide-skip-btn:hover {
+  color: #e11d48;
+  border-color: #fda4af;
+  background: #fff1f2;
+}
+.guide-skip-btn:active {
+  transform: scale(0.97);
+}

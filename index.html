@@ -101,7 +101,7 @@
           description:`
           <p>相关烙痕是主线剧情的补充，包含三种形式，其中文字类剧情可以在wiki内寻找，演出类剧情建议找b站录屏</p>
           <img 
-            src="烙痕剧情.png" 
+            src="images/烙痕剧情.png" 
             style="display:block; max-width:100%; height:auto; margin:10px auto; border-radius:6px;"
           />
           `,
@@ -151,7 +151,7 @@
         el = document.createElement('div');
         el.id = 'driver-final-anchor';
         el.style.cssText =
-          'position:fixed; top:50%; left:50%; width:1px; height:1px; pointer-events:none;';
+          'position:fixed; top:50%; left:50%; width:0.5px; height:0.5px; pointer-events:none;';
         document.body.appendChild(el);
       }
       return el;
@@ -171,41 +171,6 @@
     // 工具函数：获取SVG内image在mxgraph画布的真实屏幕坐标（修正滚动+缩放）
     // ==========================================
     function getElementRect(el) {
-      // 如果是 SVG 元素（有 ownerSVGElement 属性），走原 SVG 坐标转换逻辑
-      if (el.ownerSVGElement) {
-        const svg = el.ownerSVGElement;
-        const graphContainer = document.querySelector('.mxgraph');
-        if (!svg || !graphContainer) return el.getBoundingClientRect();
-
-        let pt = svg.createSVGPoint();
-        pt.x = Number(el.getAttribute('x') || 0);
-        pt.y = Number(el.getAttribute('y') || 0);
-
-        let node = el;
-        while (node.tagName === 'g') {
-          const ctm = node.getCTM();
-          if (ctm) pt = pt.matrixTransform(ctm);
-          node = node.parentNode;
-        }
-        const svgScreenCTM = svg.getScreenCTM();
-        pt = pt.matrixTransform(svgScreenCTM);
-
-        const scrollX = graphContainer.scrollLeft;
-        const scrollY = graphContainer.scrollTop;
-
-        const w = Number(el.getAttribute('width') || 100);
-        const h = Number(el.getAttribute('height') || 100);
-        return {
-          left: pt.x - scrollX,
-          top: pt.y - scrollY,
-          width: w,
-          height: h,
-          right: pt.x + w - scrollX,
-          bottom: pt.y + h - scrollY
-        };
-      }
-
-      // 普通 DOM 元素直接返回 getBoundingClientRect
       return el.getBoundingClientRect();
     }
 
@@ -235,9 +200,6 @@
       }
     }
 
-    // ==========================================
-    // 等待 image 元素出现（轮询检测）
-    // ==========================================
     // ==========================================
     // 等待目标图片真正加载完成（不是只等 DOM 元素出现）
     // ==========================================
@@ -306,9 +268,6 @@
       }, 8000);
     }
 
-    // ==========================================
-    // 根据前缀查找 image 元素
-    // ==========================================
     // ==========================================
     // 根据关键字查找 image 元素（支持 base64 前缀、文件名、完整 URL）
     // ==========================================
@@ -406,7 +365,6 @@
       }
 
       // 检查 Driver.js
-      // 检查 Driver.js
       if (typeof window.driver === 'undefined' || typeof window.driver.js === 'undefined') {
         console.error('❌ Driver.js 未正确加载，请检查网络。');
         window._isGuideRunning = false;
@@ -416,8 +374,7 @@
       // ⭐ 提前声明 driver，供 onHighlightStarted 内部引用
       let driver = null;
 
-
-            // ⭐ 全局点击委托：只有第一步和最后一步允许点遮罩层关闭
+      // ⭐ 全局点击委托：只有第一步和最后一步允许点遮罩层关闭
       // 用捕获阶段，避免被 Driver.js 内部逻辑吞掉事件
       document.addEventListener('click', function(e) {
         if (!driver) return;
@@ -450,7 +407,7 @@
         animate: true,
         opacity: 0.75,
         padding: 10,
-        allowClose: false,                 // ⭐ 全局禁止点击遮罩层关闭，改为按步动态控制
+        allowClose: false,
         popoverClass: 'driver-custom-popover',
         showButtons: ['next', 'previous', 'close'],
         steps: steps,
@@ -485,14 +442,51 @@
         onDone: () => {
           window._isGuideRunning = false;
           window._driverInstance = null;
+          document.querySelectorAll('.guide-skip-btn').forEach(b => b.remove());
         },
         onClose: () => {
           window._isGuideRunning = false;
           window._driverInstance = null;
-        }
+          document.querySelectorAll('.guide-skip-btn').forEach(b => b.remove());
+        },
+        // ⭐ destroy() 走的是这条回调，不是 onClose
+        onDestroy: () => {
+          window._isGuideRunning = false;
+          window._driverInstance = null;
+          document.querySelectorAll('.guide-skip-btn').forEach(b => b.remove());
+        } 
       });
 
+      // ⭐ 启动引导前：创建一个悬浮的"跳过"按钮
+      const skipBtn = document.createElement('button');
+      skipBtn.type = 'button';
+      skipBtn.className = 'guide-skip-btn';
+      skipBtn.textContent = '跳过引导';
+
+      // 用内联样式强制 z-index 和 pointer-events，确保在中间步骤也能点到
+      skipBtn.style.position = 'fixed';
+      skipBtn.style.top = '16px';
+      skipBtn.style.right = '16px';
+      skipBtn.style.zIndex = '2147483647';
+      skipBtn.style.pointerEvents = 'auto';
+
+      skipBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('🛑 用户点击跳过引导');
+        // 立即移除按钮，不等回调，避免残留
+        skipBtn.remove();
+        document.querySelectorAll('.guide-skip-btn').forEach(b => b.remove());
+        // 销毁引导（会触发 onDestroy）
+        if (driver) driver.destroy();
+        // 兜底状态复位
+        window._isGuideRunning = false;
+        window._driverInstance = null;
+      });
+      document.body.appendChild(skipBtn);
+
       // 启动引导
+      window.setModalVisible && window.setModalVisible(false);
       driver.drive();
       window._driverInstance = driver;
       console.log('🚀 多步骤引导已启动，共 ' + steps.length + ' 步');
