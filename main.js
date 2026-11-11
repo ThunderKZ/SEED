@@ -102,9 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 2. 缩放 + 移动（支持双指缩放/单指拖拽 + 保留按钮）
     // ===========================
     (function() {
-        function isSvg(el) {
-            return el && el.tagName && el.tagName.toLowerCase() === 'svg';
-        }
+        console.log('⏳ [缩放] 正在等待 .mxgraph 内部渲染出 SVG...');
 
         // 1. 等待渲染完成
         function initScalePan() {
@@ -114,29 +112,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            const graphContent = graphContainer.children[0];
-            if (isSvg(graphContent)) {
+            // ⭐ 核心修改：用 querySelector('svg') 去找，不管嵌套了几层 div
+            const graphContent = graphContainer.querySelector('svg');
+            if (graphContent) {
+                console.log('✅ [缩放] 找到了 SVG 元素，开始初始化！');
                 doInit(graphContainer, graphContent);
                 return;
             }
 
             const observer = new MutationObserver(() => {
-                const inner = graphContainer.children[0];
-                if (isSvg(inner)) {
+                const inner = graphContainer.querySelector('svg');
+                if (inner) {
                     observer.disconnect();
+                    console.log('✅ [缩放] 在 DOM 变化中等到了 SVG，开始初始化！');
                     setTimeout(() => doInit(graphContainer, inner), 50);
                 }
             });
             observer.observe(graphContainer, { childList: true, subtree: true });
 
-            // 兜底：10秒后如果还没渲染出来就放弃
             setTimeout(() => {
                 observer.disconnect();
-                const inner = graphContainer.children[0];
-                if (isSvg(inner)) {
+                const inner = graphContainer.querySelector('svg');
+                if (inner) {
                     doInit(graphContainer, inner);
                 } else {
-                    console.warn('⚠️ 超时：.mxgraph 未渲染完成，缩放功能未初始化');
+                    console.warn('⚠️ [缩放] 超时：没找到 SVG，缩放功能未初始化');
                 }
             }, 10000);
         }
@@ -170,14 +170,17 @@ document.addEventListener('DOMContentLoaded', function() {
             // 改造 DOM 结构
             graphContainer.style.position = 'relative';
             graphContainer.style.overflow = 'auto';
-            graphContainer.style.touchAction = 'none'; // 阻止浏览器默认的页面级双指缩放
-
+            // 阻止浏览器默认手势，极其重要
+            graphContainer.style.touchAction = 'none';
+            
             let placeholder = document.createElement('div');
             placeholder.style.width = originalWidth + 'px';
             placeholder.style.height = originalHeight + 'px';
             placeholder.style.pointerEvents = 'none';
             graphContainer.appendChild(placeholder);
 
+            // ⭐ 注意：因为 graphContent 是深层的 SVG，需要确保它的父级（包裹层）跟着缩放
+            // 为了兼容所有结构，直接把 transform 加给 SVG 本身
             graphContent.style.position = 'absolute';
             graphContent.style.top = '0';
             graphContent.style.left = '0';
@@ -259,7 +262,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.preventDefault();
                 const touches = e.touches;
                 if (!isPinching && touches.length === 1 && isTouching) {
-                    // 单指拖动
                     const dx = touches[0].clientX - touchStartX;
                     const dy = touches[0].clientY - touchStartY;
                     let newLeft = touchStartScrollLeft - dx;
@@ -267,7 +269,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     graphContainer.scrollLeft = Math.max(0, Math.min(placeholder.clientWidth - graphContainer.clientWidth, newLeft));
                     graphContainer.scrollTop = Math.max(0, Math.min(placeholder.clientHeight - graphContainer.clientHeight, newTop));
                 } else if (touches.length === 2 && initialDistance > 0) {
-                    // 双指缩放
                     const newDist = getDistance(touches);
                     if (newDist === 0) return;
                     let scaleFactor = newDist / initialDistance;
@@ -315,7 +316,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 graphContainer.style.cursor = '';
             });
 
-            // 按钮控制（如果页面有的话）
             const zoomIn = document.getElementById('zoomInBtn');
             const zoomOut = document.getElementById('zoomOutBtn');
             const zoomReset = document.getElementById('zoomResetBtn');
@@ -329,12 +329,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (zoomReset) zoomReset.addEventListener('click', () => setScaleWithCenter(INIT_FIT_SCALE, window.innerWidth/2, window.innerHeight/2));
 
-            console.log('✅ 缩放/平移功能已成功初始化');
+            console.log('🎉 [缩放] 手势绑定完成！');
         }
 
         initScalePan();
     })();
-
+    
     // ===========================
     // 3. 主弹窗（修复显示/关闭逻辑）
     // ===========================
